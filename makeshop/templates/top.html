@@ -1,0 +1,386 @@
+<!--
+  top.html — MakeShop クリエイターモード「トップページ」テンプレート（仮）
+  移植元: site/index.html（Phase C 静的版）
+
+  【このテンプレート全体に共通するTODO要確認事項（詳細はCHECKLIST.md）】
+  - クリエイターモードの各ページ編集画面が<head>要素(title/meta/Google Fonts等)を
+    直接編集できるかどうか未確認（docs/makeshop-notes.md §3）。
+  - 内部リンク（カテゴリ・ALL ITEMS・フリーページ等）のURL体系はMakeShop側の実際の
+    発行規則に合わせて要置換。本テンプレートではルート相対パス（例: /category/xxx/）を
+    仮置きしている（実URLは管理画面でページ作成後に確定する）。
+  - 商品画像の実URLは管理画面への画像アップロード後に発行される
+    （ギガプラス10等。docs/makeshop-notes.md §2）。本テンプレートでは
+    `/img/products/{SKU}.png` という仮パスを置いている。
+  - 下記「PICK UP」「NEW ITEMS」「GIFT」は特定SKUを手動キュレーションする区画のため、
+    products.jsonの値を静的HTMLとして埋め込んだプレースホルダとした
+    （MakeShopに「おすすめ商品」等の公式ピックアップ表示タグがあるかは未確認）。
+  - 共通CSS(common.css)は管理画面の「共通CSS」入力欄に貼り付けることで
+    m_sys_common.css として自動リンクされる想定のため、このHTML側には
+    <link rel="stylesheet"> を記載していない。
+-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iroha. | STATIONERY &amp; CREATIVE GOODS</title>
+<meta name="description" content="毎日に、彩りとアイデアを。文房具・ステーショナリー・クリエイティブ雑貨のiroha.オンラインストアです。">
+<meta property="og:title" content="iroha. | STATIONERY &amp; CREATIVE GOODS">
+<meta property="og:description" content="毎日に、彩りとアイデアを。文房具・ステーショナリー・クリエイティブ雑貨のiroha.オンラインストアです。">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<!-- TODO要確認: favicon設定がクリエイターモード内で可能か、管理画面の別設定(ショップ基本設定等)かは未確認 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="p-root">
+<p class="p-notice-bar">本サイトは架空ブランド「iroha.」を題材にしたポートフォリオ作品です。商品・価格はすべて架空の設定であり、実際の販売・購入はできません。</p>
+<header class="p-header">
+  <div class="p-header__inner">
+    <a class="p-logo" href="/" aria-label="iroha. ホーム">
+      <span class="p-logo__word"><svg width="74" height="24" viewBox="0 0 74 24" aria-hidden="true" focusable="false"><text x="0" y="18" font-family="Poppins, sans-serif" font-weight="600" font-size="20" fill="#315BCB">iroha</text><circle cx="70" cy="19" r="3.4" fill="#F07842"/></svg></span>
+      <span class="p-logo__tagline">STATIONERY &amp; CREATIVE GOODS</span>
+    </a>
+    <nav class="p-nav" aria-label="メインナビゲーション">
+      <div class="p-nav__dropdown">
+        <button type="button" class="p-nav__dropdown-toggle" aria-haspopup="true" aria-expanded="false">CATEGORY <span class="p-nav__dropdown-caret">▾</span></button>
+        <div class="p-nav__dropdown-panel">
+          <a class="p-nav__dropdown-item p-cat-notebook-paper" href="/category/notebook-paper/"><span class="p-nav__dot"></span>NOTEBOOK &amp; PAPER</a><a class="p-nav__dropdown-item p-cat-pen-writing" href="/category/pen-writing/"><span class="p-nav__dot"></span>PEN &amp; WRITING</a><a class="p-nav__dropdown-item p-cat-sticker-craft" href="/category/sticker-craft/"><span class="p-nav__dot"></span>STICKER &amp; CRAFT</a><a class="p-nav__dropdown-item p-cat-desk-accessories" href="/category/desk-accessories/"><span class="p-nav__dot"></span>DESK ACCESSORIES</a><a class="p-nav__dropdown-item p-cat-gift-set" href="/category/gift-set/"><span class="p-nav__dot"></span>GIFT &amp; SET</a>
+          <a class="p-nav__dropdown-item" href="/items/"><span class="p-nav__dot" style="background:var(--c-ink)"></span>ALL ITEMS</a>
+        </div>
+      </div>
+      <a class="p-nav__link" href="/about/">ABOUT</a><a class="p-nav__link" href="/gift-guide/">GIFT GUIDE</a><a class="p-nav__link" href="/news/">NEWS</a><a class="p-nav__link" href="/faq/">FAQ</a>
+    </nav>
+    <div class="p-header__icons">
+      <!-- TODO要確認: 検索・カートアイコンの遷移先はMakeShop標準機能のURL/タグに置換 -->
+      <a class="p-icon-btn" href="#" aria-label="検索"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><line x1="16.2" y1="16.2" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+      <a class="p-icon-btn" href="#" aria-label="カート"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16l-1.6 10.2a2 2 0 0 1-2 1.8H7.6a2 2 0 0 1-2-1.8L4 7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 7V6a4 4 0 0 1 8 0v1" stroke="currentColor" stroke-width="2"/></svg></a>
+      <details class="p-spmenu">
+        <summary aria-label="メニューを開く" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="17" x2="20" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+        <div class="p-spmenu__panel">
+          <button type="button" class="p-spmenu__close" data-spmenu-close aria-label="メニューを閉じる"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><line x1="5" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="19" y1="5" x2="5" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <a class="p-spmenu__link" href="/items/">ALL ITEMS</a>
+          <div class="p-spmenu__sub">
+            <a class="p-nav__dropdown-item p-cat-notebook-paper" href="/category/notebook-paper/"><span class="p-nav__dot"></span>NOTEBOOK &amp; PAPER</a><a class="p-nav__dropdown-item p-cat-pen-writing" href="/category/pen-writing/"><span class="p-nav__dot"></span>PEN &amp; WRITING</a><a class="p-nav__dropdown-item p-cat-sticker-craft" href="/category/sticker-craft/"><span class="p-nav__dot"></span>STICKER &amp; CRAFT</a><a class="p-nav__dropdown-item p-cat-desk-accessories" href="/category/desk-accessories/"><span class="p-nav__dot"></span>DESK ACCESSORIES</a><a class="p-nav__dropdown-item p-cat-gift-set" href="/category/gift-set/"><span class="p-nav__dot"></span>GIFT &amp; SET</a>
+          </div>
+          <a class="p-spmenu__link" href="/about/">ABOUT</a><a class="p-spmenu__link" href="/gift-guide/">GIFT GUIDE</a><a class="p-spmenu__link" href="/news/">NEWS</a><a class="p-spmenu__link" href="/faq/">FAQ</a>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+<main>
+<section class="p-hero">
+  <div class="p-container p-hero__inner">
+    <div>
+      <h1 class="p-hero__title">毎日に、彩りと<br>アイデアを。</h1>
+      <p class="p-hero__sub">いつもの毎日に、小さな発見を。</p>
+      <div class="p-hero__cta"><a class="p-btn p-btn--primary" href="/items/">ALL ITEMS →</a></div>
+    </div>
+    <div class="p-hero__shapes" aria-hidden="true">
+      <div class="p-shape p-shape--circle" style="left:15%; top:10%; width:62%; aspect-ratio:1/1; background:var(--c-yellow);"></div>
+      <div class="p-shape p-shape--half-circle" style="left:36%; top:-6%; width:52%; aspect-ratio:2/1; background:var(--c-blue); transform:rotate(6deg);"></div>
+      <div class="p-shape p-shape--wave" style="left:-8%; bottom:2%; width:48%; aspect-ratio:1/1; background:var(--c-green);"></div>
+      <div class="p-shape p-shape--square" style="right:2%; bottom:8%; width:32%; aspect-ratio:1/1; background:var(--c-orange); transform:rotate(14deg);"></div>
+      <div class="p-shape p-shape--circle" style="right:6%; top:4%; width:20%; aspect-ratio:1/1; background:var(--c-pink);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TODO要確認: 以下「PICK UP」はSKU指定(NB009/PW003/DA001/DA007)の手動キュレーション区画。
+     MakeShopに「おすすめ商品」等の管理画面ピックアップ機能＆対応テンプレートタグがあるか未確認のため、
+     products.jsonの値を静的に埋め込んだプレースホルダとしている。画像パスも仮パス(要確認)。 -->
+<section class="p-section">
+  <div class="p-container">
+    <div class="p-section__head p-section__head--center">
+      <p class="p-section__eyebrow">おすすめアイテム</p>
+      <h2 class="p-section__title">PICK <span class="p-accent">UP</span></h2>
+    </div>
+    <div class="p-grid--scroll">
+      <a class="p-card p-cat-notebook-paper" href="/products/NB009/">
+        <div class="p-card__media">
+          <img src="/img/products/NB009.png" alt="ソフトカバージャーナル" loading="lazy" width="400" height="400">
+          <span class="p-card__tags"><span class="p-tag p-tag--shuriki">主力</span></span>
+        </div>
+        <div class="p-card__body">
+          <p class="p-card__name-ja">ソフトカバージャーナル</p>
+          <p class="p-card__name-en">SOFT COVER JOURNAL</p>
+          <p class="p-card__price">¥1,980<span class="p-card__price-note">(税込)</span></p>
+        </div>
+      </a><a class="p-card p-cat-pen-writing" href="/products/PW003/">
+        <div class="p-card__media">
+          <img src="/img/products/PW003.png" alt="ソフトタッチボールペン" loading="lazy" width="400" height="400">
+          <span class="p-card__tags"><span class="p-tag p-tag--shuriki">主力</span></span>
+        </div>
+        <div class="p-card__body">
+          <p class="p-card__name-ja">ソフトタッチボールペン</p>
+          <p class="p-card__name-en">SOFT TOUCH BALLPOINT</p>
+          <p class="p-card__price">¥660<span class="p-card__price-note">(税込)</span></p>
+        </div>
+      </a><a class="p-card p-cat-desk-accessories" href="/products/DA001/">
+        <div class="p-card__media">
+          <img src="/img/products/DA001.png" alt="スタッキングデスクトレー" loading="lazy" width="400" height="400">
+          <span class="p-card__tags"><span class="p-tag p-tag--shuriki">主力</span></span>
+        </div>
+        <div class="p-card__body">
+          <p class="p-card__name-ja">スタッキングデスクトレー</p>
+          <p class="p-card__name-en">STACKABLE DESK TRAY</p>
+          <p class="p-card__price">¥1,980<span class="p-card__price-note">(税込)</span></p>
+        </div>
+      </a><a class="p-card p-cat-desk-accessories" href="/products/DA007/">
+        <div class="p-card__media">
+          <img src="/img/products/DA007.png" alt="デスクマット カラー" loading="lazy" width="400" height="400">
+          <span class="p-card__tags"><span class="p-tag p-tag--shuriki">主力</span></span>
+        </div>
+        <div class="p-card__body">
+          <p class="p-card__name-ja">デスクマット カラー</p>
+          <p class="p-card__name-en">DESK MAT COLOR</p>
+          <p class="p-card__price">¥2,750<span class="p-card__price-note">(税込)</span></p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="p-section">
+  <div class="p-container">
+    <div class="p-section__head p-section__head--center">
+      <p class="p-section__eyebrow">カテゴリーから探す</p>
+      <h2 class="p-section__title">CATEGORY</h2>
+    </div>
+    <!-- 5カテゴリは固定のため静的に列挙（MakeShop側に「全カテゴリ一覧」タグがあれば
+         ループ化できる可能性があるが未確認。TODO要確認） -->
+    <div class="p-category-grid">
+      <a class="p-category-card p-tint p-cat-notebook-paper" href="/category/notebook-paper/">
+        <span class="p-category-card__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-hidden="true"><rect width="400" height="400" fill="#E6EBF9"/><g transform="rotate(-8 189 189)"><rect x="107.5" y="64.5" width="163" height="249" rx="18" fill="#315BCB"/><rect x="107.5" y="64.5" width="26" height="249" rx="12" fill="#F07842"/></g><circle cx="326" cy="86" r="22" fill="#F07842"/><circle cx="280" cy="140" r="15" fill="#F07842"/></svg></span>
+        <span class="p-category-card__en">NOTEBOOK &amp; PAPER</span>
+        <span class="p-category-card__ja">ノート・紙もの</span>
+      </a><a class="p-category-card p-tint p-cat-pen-writing" href="/category/pen-writing/">
+        <span class="p-category-card__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-hidden="true"><rect width="400" height="400" fill="#FDEFE8"/><g transform="rotate(14 180 180)"><rect x="73.5" y="154.5" width="213" height="51" rx="25.5" fill="#F07842"/><polygon points="40.5,180 73.5,154.5 73.5,205.5" fill="#315BCB"/></g><circle cx="92" cy="302" r="14" fill="#315BCB"/><circle cx="252" cy="258" r="10" fill="#315BCB"/></svg></span>
+        <span class="p-category-card__en">PEN &amp; WRITING</span>
+        <span class="p-category-card__ja">ペン・筆記具</span>
+      </a><a class="p-category-card p-tint p-cat-sticker-craft" href="/category/sticker-craft/">
+        <span class="p-category-card__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-hidden="true"><rect width="400" height="400" fill="#FEF9E9"/><circle cx="56" cy="74" r="21.5" fill="#F3C94B"/><rect x="261" y="41" width="32" height="32" rx="10" fill="#E66B88"/><circle cx="198" cy="201" r="27" fill="#F8E19C"/></svg></span>
+        <span class="p-category-card__en">STICKER &amp; CRAFT</span>
+        <span class="p-category-card__ja">シール・クラフト</span>
+      </a><a class="p-category-card p-tint p-cat-desk-accessories" href="/category/desk-accessories/">
+        <span class="p-category-card__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-hidden="true"><rect width="400" height="400" fill="#EDF4F1"/><g transform="rotate(-8 200 200)"><rect x="58" y="254" width="197" height="49" rx="14" fill="#68A58D"/><rect x="76" y="196" width="197" height="49" rx="14" fill="#315BCB"/></g></svg></span>
+        <span class="p-category-card__en">DESK ACCESSORIES</span>
+        <span class="p-category-card__ja">デスクアクセサリー</span>
+      </a><a class="p-category-card p-tint p-cat-gift-set" href="/category/gift-set/">
+        <span class="p-category-card__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-hidden="true"><rect width="400" height="400" fill="#FCEDF1"/><g transform="rotate(-8 190 196)"><rect x="95" y="109" width="190" height="174" rx="16" fill="#E66B88"/><rect x="175.5" y="109" width="29" height="174" fill="#F3C94B"/><path d="M 149 109 A 41 41 0 0 1 231 109 Z" fill="#F3C94B"/></g><circle cx="190" cy="109" r="12" fill="#F3C94B"/></svg></span>
+        <span class="p-category-card__en">GIFT &amp; SET</span>
+        <span class="p-category-card__ja">ギフト・セット</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- TODO要確認: 「NEW ITEMS」もPICK UP同様、SKU固定の手動キュレーション区画（プレースホルダ） -->
+<section class="p-section">
+  <div class="p-container">
+    <div class="p-section__head p-section__head--center">
+      <p class="p-section__eyebrow">新着アイテム</p>
+      <h2 class="p-section__title">NEW ITEMS</h2>
+    </div>
+    <div class="p-grid">
+      <a class="p-card p-cat-notebook-paper" href="/products/NB012/">
+        <div class="p-card__media"><img src="/img/products/NB012.png" alt="マンスリープランナーパッド" loading="lazy" width="400" height="400"><span class="p-card__tags"><span class="p-tag p-tag--osusume">おすすめ</span></span></div>
+        <div class="p-card__body"><p class="p-card__name-ja">マンスリープランナーパッド</p><p class="p-card__name-en">MONTHLY PLANNER PAD</p><p class="p-card__price">¥1,100<span class="p-card__price-note">(税込)</span></p></div>
+      </a><a class="p-card p-cat-pen-writing" href="/products/PW009/">
+        <div class="p-card__media"><img src="/img/products/PW009.png" alt="デスクペンスタンド" loading="lazy" width="400" height="400"><span class="p-card__tags"><span class="p-tag p-tag--shuriki">主力</span></span></div>
+        <div class="p-card__body"><p class="p-card__name-ja">デスクペンスタンド</p><p class="p-card__name-en">DESK PEN STAND</p><p class="p-card__price">¥1,650<span class="p-card__price-note">(税込)</span></p></div>
+      </a><a class="p-card p-cat-pen-writing" href="/products/PW010/">
+        <div class="p-card__media"><img src="/img/products/PW010.png" alt="ライティングツールセット" loading="lazy" width="400" height="400"><span class="p-card__tags"><span class="p-tag p-tag--gift">ギフト</span></span></div>
+        <div class="p-card__body"><p class="p-card__name-ja">ライティングツールセット</p><p class="p-card__name-en">WRITING TOOL SET</p><p class="p-card__price">¥2,750<span class="p-card__price-note">(税込)</span></p></div>
+      </a><a class="p-card p-cat-sticker-craft" href="/products/SC009/">
+        <div class="p-card__media"><img src="/img/products/SC009.png" alt="クリアステッカーシート" loading="lazy" width="400" height="400"><span class="p-card__tags"><span class="p-tag p-tag--ninki">人気</span></span></div>
+        <div class="p-card__body"><p class="p-card__name-ja">クリアステッカーシート</p><p class="p-card__name-en">CLEAR STICKER SHEET</p><p class="p-card__price">¥660<span class="p-card__price-note">(税込)</span></p></div>
+      </a><a class="p-card p-cat-sticker-craft" href="/products/SC010/">
+        <div class="p-card__media"><img src="/img/products/SC010.png" alt="カードメイキングキット" loading="lazy" width="400" height="400"><span class="p-card__tags"><span class="p-tag p-tag--gift">ギフト</span></span></div>
+        <div class="p-card__body"><p class="p-card__name-ja">カードメイキングキット</p><p class="p-card__name-en">DIY CARD MAKING KIT</p><p class="p-card__price">¥1,650<span class="p-card__price-note">(税込)</span></p></div>
+      </a><a class="p-card p-cat-desk-accessories" href="/products/DA007/">
+        <div class="p-card__media"><img src="/img/products/DA007.png" alt="デスクマット カラー" loading="lazy" width="400" height="400"><span class="p-card__tags"><span class="p-tag p-tag--shuriki">主力</span></span></div>
+        <div class="p-card__body"><p class="p-card__name-ja">デスクマット カラー</p><p class="p-card__name-en">DESK MAT COLOR</p><p class="p-card__price">¥2,750<span class="p-card__price-note">(税込)</span></p></div>
+      </a><a class="p-card p-cat-desk-accessories" href="/products/DA008/">
+        <div class="p-card__media"><img src="/img/products/DA008.png" alt="ミニストレージボックス" loading="lazy" width="400" height="400"><span class="p-card__tags"><span class="p-tag p-tag--osusume">おすすめ</span></span></div>
+        <div class="p-card__body"><p class="p-card__name-ja">ミニストレージボックス</p><p class="p-card__name-en">MINI STORAGE BOX</p><p class="p-card__price">¥1,540<span class="p-card__price-note">(税込)</span></p></div>
+      </a><a class="p-card p-cat-gift-set" href="/products/GS004/">
+        <div class="p-card__media"><img src="/img/products/GS004.png" alt="クリエイティブウィークエンドボックス" loading="lazy" width="400" height="400"><span class="p-card__tags"><span class="p-tag p-tag--gentei">限定</span></span></div>
+        <div class="p-card__body"><p class="p-card__name-ja">クリエイティブウィークエンドボックス</p><p class="p-card__name-en">CREATIVE WEEKEND BOX</p><p class="p-card__price">¥5,500<span class="p-card__price-note">(税込)</span></p></div>
+      </a>
+    </div>
+    <div class="p-section__foot"><a class="p-btn p-btn--outline" href="/items/">ALL ITEMS →</a></div>
+  </div>
+</section>
+
+<section class="p-section">
+  <div class="p-container">
+    <div class="p-section__head p-section__head--center">
+      <p class="p-section__eyebrow">シーンから探す</p>
+      <h2 class="p-section__title">SCENE &amp; IDEAS</h2>
+    </div>
+    <div class="p-scene-grid">
+      <a class="p-scene-card p-cat-desk-accessories" href="/category/desk-accessories/">
+        <span class="p-scene-card__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-hidden="true"><rect width="400" height="400" fill="#EDF4F1"/><g transform="rotate(-3 200 200)"><rect x="68" y="272" width="227" height="57" rx="14" fill="#68A58D"/><rect x="86" y="214" width="227" height="57" rx="14" fill="#315BCB"/><rect x="104" y="156" width="227" height="57" rx="14" fill="#ACCEC0"/><rect x="122" y="98" width="227" height="57" rx="14" fill="#68A58D"/></g></svg></span>
+        <p class="p-scene-card__title">デスクを整える</p>
+        <p class="p-scene-card__text">お気に入りの道具で、集中できる空間をつくる。</p>
+      </a><a class="p-scene-card p-cat-notebook-paper" href="/category/notebook-paper/">
+        <span class="p-scene-card__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-hidden="true"><rect width="400" height="400" fill="#E6EBF9"/><g transform="rotate(-3 199 207)"><rect x="109.5" y="70" width="179" height="274" rx="18" fill="#315BCB"/><rect x="109.5" y="70" width="28" height="274" rx="12" fill="#F07842"/></g><circle cx="320" cy="100" r="24" fill="#F07842"/></svg></span>
+        <p class="p-scene-card__title">手帳とノートの時間</p>
+        <p class="p-scene-card__text">書くことが、少し楽しみになる一冊を。</p>
+      </a><a class="p-scene-card p-cat-gift-set" href="/gift-guide/">
+        <span class="p-scene-card__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-hidden="true"><rect width="400" height="400" fill="#FCEDF1"/><g transform="rotate(-3 200 214)"><rect x="90.5" y="112.5" width="219" height="203" rx="16" fill="#E66B88"/><rect x="183.5" y="112.5" width="33" height="203" fill="#F3C94B"/><path d="M 149 112.5 A 51 51 0 0 1 251 112.5 Z" fill="#F3C94B"/></g></svg></span>
+        <p class="p-scene-card__title">贈りものを選ぶ</p>
+        <p class="p-scene-card__text">大切な人へ、ちょっと嬉しいものを。</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- TODO要確認: 「GIFT」もSKU固定(GS001-005)の手動キュレーション区画（プレースホルダ） -->
+<section class="p-gift-band p-tint p-cat-gift-set">
+  <div class="p-container">
+    <div class="p-section__head p-section__head--center">
+      <p class="p-section__eyebrow">贈りもの</p>
+      <h2 class="p-section__title">GIFT</h2>
+    </div>
+    <div class="p-gift-band__row">
+      <a class="p-card p-cat-gift-set" href="/products/GS001/">
+        <div class="p-card__media"><img src="/img/products/GS001.png" alt="iroha スターターボックス" loading="lazy" width="400" height="400"><span class="p-card__tags"><span class="p-tag p-tag--gift">ギフト</span></span></div>
+        <div class="p-card__body"><p class="p-card__name-ja">iroha スターターボックス</p><p class="p-card__name-en">IROHA STARTER BOX</p><p class="p-card__price">¥3,300<span class="p-card__price-note">(税込)</span></p></div>
+      </a><a class="p-card p-cat-gift-set" href="/products/GS002/">
+        <div class="p-card__media"><img src="/img/products/GS002.png" alt="カラフルデスクセット" loading="lazy" width="400" height="400"><span class="p-card__tags"><span class="p-tag p-tag--gift">ギフト</span></span></div>
+        <div class="p-card__body"><p class="p-card__name-ja">カラフルデスクセット</p><p class="p-card__name-en">COLORFUL DESK SET</p><p class="p-card__price">¥4,950<span class="p-card__price-note">(税込)</span></p></div>
+      </a><a class="p-card p-cat-gift-set" href="/products/GS003/">
+        <div class="p-card__media"><img src="/img/products/GS003.png" alt="レター＆メモリーセット" loading="lazy" width="400" height="400"><span class="p-card__tags"><span class="p-tag p-tag--gift">ギフト</span></span></div>
+        <div class="p-card__body"><p class="p-card__name-ja">レター＆メモリーセット</p><p class="p-card__name-en">LETTER &amp; MEMORY SET</p><p class="p-card__price">¥2,420<span class="p-card__price-note">(税込)</span></p></div>
+      </a><a class="p-card p-cat-gift-set" href="/products/GS004/">
+        <div class="p-card__media"><img src="/img/products/GS004.png" alt="クリエイティブウィークエンドボックス" loading="lazy" width="400" height="400"><span class="p-card__tags"><span class="p-tag p-tag--gentei">限定</span></span></div>
+        <div class="p-card__body"><p class="p-card__name-ja">クリエイティブウィークエンドボックス</p><p class="p-card__name-en">CREATIVE WEEKEND BOX</p><p class="p-card__price">¥5,500<span class="p-card__price-note">(税込)</span></p></div>
+      </a><a class="p-card p-cat-gift-set" href="/products/GS005/">
+        <div class="p-card__media"><img src="/img/products/GS005.png" alt="ミニカラーギフト" loading="lazy" width="400" height="400"><span class="p-card__tags"><span class="p-tag p-tag--gift">ギフト</span></span></div>
+        <div class="p-card__body"><p class="p-card__name-ja">ミニカラーギフト</p><p class="p-card__name-en">MINI COLOR GIFT</p><p class="p-card__price">¥1,650<span class="p-card__price-note">(税込)</span></p></div>
+      </a>
+    </div>
+    <div class="p-section__foot"><a class="p-btn p-btn--primary" href="/gift-guide/">GIFT GUIDE →</a></div>
+  </div>
+</section>
+
+<section class="p-section">
+  <div class="p-container">
+    <div class="p-section__head">
+      <p class="p-section__eyebrow">ブランドについて</p>
+      <h2 class="p-section__title">ABOUT</h2>
+    </div>
+    <p class="p-about-teaser__text">いつもの毎日に、小さな発見を。書く、描く、整理する、贈る。何気ない日常の動作に、色やかたち、ちょっとしたアイデアを添えるステーショナリーと雑貨を提案するブランドです。</p>
+    <div class="p-keyword-group">
+      <span class="p-keyword-chip"><span class="p-keyword-chip__dot" style="background:#F07842"></span>PLAYFUL / 遊び心</span><span class="p-keyword-chip"><span class="p-keyword-chip__dot" style="background:#315BCB"></span>COLORFUL / 色彩</span><span class="p-keyword-chip"><span class="p-keyword-chip__dot" style="background:#68A58D"></span>CREATIVE / 創造性</span><span class="p-keyword-chip"><span class="p-keyword-chip__dot" style="background:#F3C94B"></span>DAILY / 日常</span><span class="p-keyword-chip"><span class="p-keyword-chip__dot" style="background:#E66B88"></span>DISCOVERY / 小さな発見</span>
+    </div>
+    <div class="p-section__foot" style="text-align:left;"><a class="p-btn p-btn--outline" href="/about/">irohaについて →</a></div>
+  </div>
+</section>
+
+<!-- TODO要確認: NEWSはMakeShop標準の「お知らせ」機能＋対応タグに置換予定。現状は静的3件のプレースホルダ -->
+<section class="p-section">
+  <div class="p-container">
+    <div class="p-section__head p-section__head--center">
+      <p class="p-section__eyebrow">お知らせ</p>
+      <h2 class="p-section__title">NEWS</h2>
+    </div>
+    <ul class="p-news-list">
+      <li><span class="p-news-date">2026.11.01</span><span class="p-news-title">iroha. オンラインストア リニューアルオープン</span></li><li><span class="p-news-date">2026.10.15</span><span class="p-news-title">GIFT特集ページを公開しました</span></li><li><span class="p-news-date">2026.09.01</span><span class="p-news-title">年末年始の営業についてのお知らせ</span></li>
+    </ul>
+    <div class="p-section__foot"><a class="p-btn p-btn--outline" href="/news/">NEWS一覧 →</a></div>
+  </div>
+</section>
+
+<section class="p-section">
+  <div class="p-container">
+    <div class="p-section__head p-section__head--center">
+      <p class="p-section__eyebrow">フォローする</p>
+      <h2 class="p-section__title">FOLLOW US</h2>
+    </div>
+    <!-- SNSグリッドは実写投稿のないダミーのため、外部ファイル化せずSVGを直接埋め込む（パス依存をなくすため） -->
+    <div class="p-sns-grid">
+      <a class="p-sns-grid__item" href="#" aria-label="Instagram投稿（ダミー）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-hidden="true"><rect width="400" height="400" fill="#E6EBF9"/><g transform="rotate(-3 199 207)"><rect x="109.5" y="70" width="179" height="274" rx="18" fill="#315BCB"/><rect x="109.5" y="70" width="28" height="274" rx="12" fill="#F07842"/></g><circle cx="320" cy="100" r="24" fill="#F07842"/></svg></a><a class="p-sns-grid__item" href="#" aria-label="Instagram投稿（ダミー）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-hidden="true"><rect width="400" height="400" fill="#FDEFE8"/><g transform="rotate(30 202 217)"><rect x="74.5" y="186.5" width="255" height="61" rx="30.5" fill="#F07842"/><polygon points="35.5,217 74.5,186.5 74.5,247.5" fill="#F3C94B"/></g><circle cx="93" cy="269" r="14" fill="#F3C94B"/></svg></a><a class="p-sns-grid__item" href="#" aria-label="Instagram投稿（ダミー）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-hidden="true"><rect width="400" height="400" fill="#FEF9E9"/><circle cx="68" cy="86" r="24.5" fill="#F3C94B"/><rect x="226.5" y="50.5" width="37" height="37" rx="10" fill="#68A58D"/><circle cx="210" cy="213" r="31.5" fill="#F8E19C"/></svg></a><a class="p-sns-grid__item" href="#" aria-label="Instagram投稿（ダミー）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-hidden="true"><rect width="400" height="400" fill="#EDF4F1"/><g transform="rotate(-8 200 200)"><rect x="77" y="275" width="264" height="66" rx="14" fill="#68A58D"/><rect x="95" y="217" width="264" height="66" rx="14" fill="#E66B88"/><rect x="113" y="159" width="264" height="66" rx="14" fill="#ACCEC0"/><rect x="131" y="101" width="264" height="66" rx="14" fill="#68A58D"/></g></svg></a><a class="p-sns-grid__item" href="#" aria-label="Instagram投稿（ダミー）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-hidden="true"><rect width="400" height="400" fill="#FCEDF1"/><g transform="rotate(-4 195 205)"><rect x="85.5" y="103.5" width="219" height="203" rx="16" fill="#E66B88"/><rect x="178.5" y="103.5" width="33" height="203" fill="#315BCB"/><path d="M 144 103.5 A 51 51 0 0 1 246 103.5 Z" fill="#315BCB"/></g></svg></a><a class="p-sns-grid__item" href="#" aria-label="Instagram投稿（ダミー）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-hidden="true"><rect width="400" height="400" fill="#E6EBF9"/><g transform="rotate(0 209 202)"><rect x="122" y="69" width="174" height="266" rx="18" fill="#315BCB"/><rect x="122" y="69" width="27" height="266" rx="12" fill="#F3C94B"/></g><circle cx="317" cy="105" r="25" fill="#F3C94B"/><circle cx="271" cy="159" r="18" fill="#F3C94B"/></svg></a>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="p-footer">
+  <div class="p-container">
+    <div class="p-footer__grid">
+      <details class="p-footer__accordion" open>
+        <summary>SHOP</summary>
+        <nav aria-label="ショップ"><a class="p-footer__link" href="/category/notebook-paper/">NOTEBOOK &amp; PAPER</a><a class="p-footer__link" href="/category/pen-writing/">PEN &amp; WRITING</a><a class="p-footer__link" href="/category/sticker-craft/">STICKER &amp; CRAFT</a><a class="p-footer__link" href="/category/desk-accessories/">DESK ACCESSORIES</a><a class="p-footer__link" href="/category/gift-set/">GIFT &amp; SET</a><a class="p-footer__link" href="/items/">ALL ITEMS</a></nav>
+      </details>
+      <details class="p-footer__accordion" open>
+        <summary>GUIDE</summary>
+        <nav aria-label="ガイド"><a class="p-footer__link" href="/about/">ABOUT</a><a class="p-footer__link" href="/gift-guide/">GIFT GUIDE</a><a class="p-footer__link" href="/faq/">FAQ</a><a class="p-footer__link" href="/news/">NEWS</a></nav>
+      </details>
+      <details class="p-footer__accordion" open>
+        <summary>POLICY</summary>
+        <nav aria-label="ポリシー"><a class="p-footer__link" href="/policy/#guide">ご利用ガイド</a><a class="p-footer__link" href="/policy/#tokushoho">特定商取引法に基づく表記（デモ注記）</a><a class="p-footer__link" href="/policy/#privacy">プライバシーポリシー（デモ）</a></nav>
+      </details>
+      <div>
+        <span class="p-logo__word"><svg width="74" height="24" viewBox="0 0 74 24" aria-hidden="true" focusable="false"><text x="0" y="18" font-family="Poppins, sans-serif" font-weight="600" font-size="20" fill="#315BCB">iroha</text><circle cx="70" cy="19" r="3.4" fill="#F07842"/></svg></span>
+        <p class="p-logo__tagline">STATIONERY &amp; CREATIVE GOODS</p>
+        <div class="p-footer__sns">
+          <a class="p-footer__sns-link" href="#" aria-label="Instagram（ダミー）"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="6" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="2"/></svg></a>
+          <a class="p-footer__sns-link" href="#" aria-label="X（ダミー）"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><line x1="8" y1="9" x2="16" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="16" y1="9" x2="8" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="p-footer__bottom">
+      <p class="p-footer__copyright">© iroha.</p>
+      <p class="p-notice-bar p-notice-bar--footer">本サイトは架空ブランド「iroha.」を題材にしたポートフォリオ作品です。商品・価格はすべて架空の設定であり、実際の販売・購入はできません。</p>
+    </div>
+  </div>
+</footer>
+</div>
+<script>
+/* SPメニューの開閉・CATEGORYドロップダウンのaria-expanded同期のみ（site/js/main.jsから抜粋・移植）。
+   JSが無効でも<details>のネイティブ開閉・リンク遷移は機能するプログレッシブエンハンスメント構成。 */
+(function () {
+  "use strict";
+  function initSpMenu() {
+    var menu = document.querySelector(".p-spmenu");
+    if (!menu) return;
+    var summary = menu.querySelector("summary");
+    function syncExpanded() {
+      if (summary) summary.setAttribute("aria-expanded", String(menu.hasAttribute("open")));
+    }
+    menu.addEventListener("toggle", syncExpanded);
+    var closeBtn = menu.querySelector("[data-spmenu-close]");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", function () { menu.removeAttribute("open"); });
+    }
+    menu.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () { menu.removeAttribute("open"); });
+    });
+  }
+  function initCategoryDropdown() {
+    document.querySelectorAll(".p-nav__dropdown").forEach(function (dropdown) {
+      var toggle = dropdown.querySelector(".p-nav__dropdown-toggle");
+      if (!toggle) return;
+      function open() { toggle.setAttribute("aria-expanded", "true"); }
+      function close() { toggle.setAttribute("aria-expanded", "false"); }
+      dropdown.addEventListener("mouseenter", open);
+      dropdown.addEventListener("mouseleave", close);
+      dropdown.addEventListener("focusin", open);
+      dropdown.addEventListener("focusout", function (e) {
+        if (!dropdown.contains(e.relatedTarget)) close();
+      });
+    });
+  }
+  document.addEventListener("DOMContentLoaded", function () {
+    initSpMenu();
+    initCategoryDropdown();
+  });
+})();
+</script>
+</body>
+</html>

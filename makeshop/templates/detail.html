@@ -1,0 +1,309 @@
+<!--
+  detail.html — MakeShop クリエイターモード「商品詳細」テンプレート（仮）
+  移植元: site/products/NB001/index.html 等（Phase C 静的版・45商品共通構造）
+
+  使用する独自タグ（docs/makeshop-notes.md §3 / 企画指示より。確認済み）:
+    $item.name / $item.price_html / $item.description / $item.image_L / $item.multi_image.list[i]
+  参考（確認済みだが本テンプレでの具体的な出力形式は未確認）:
+    $item.option_sku.list[i] … カラー選択UIに使用（バリエーション1=カラー登録を想定）
+
+  【このテンプレート全体に共通するTODO要確認事項（詳細はCHECKLIST.md）】
+  - カートボタンの正式出力タグ名が未確認（下記本文中に個別TODOコメントあり）。
+  - $item.multi_image.list[i] のサブフィールド名（画像URL・altテキスト等）が未確認。
+  - $item.option_sku.list[i] のサブフィールド名（選択肢名・在庫数等）が未確認。
+  - 商品ラベル(タグ)をテンプレートから読み出す専用プロパティが未確認
+    （$item.label_list等。CSV側は列84へ投入済みだが読み出し側タグは未確認）。
+  - 英語名(EN)・関連商品(同カテゴリ4点)の取得方法が未確認（本文中に個別TODOコメントあり）。
+  - 共通CSS(common.css)は管理画面「共通CSS」へ貼り付け、m_sys_common.css自動リンクの想定のため
+    このHTMLに<link rel="stylesheet">は記載していない。
+-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{$item.name} | iroha.</title>
+<meta name="description" content="{$item.description}">
+<meta property="og:title" content="{$item.name} | iroha.">
+<meta property="og:description" content="{$item.description}">
+<meta property="og:type" content="product">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="p-root">
+<p class="p-notice-bar">本サイトは架空ブランド「iroha.」を題材にしたポートフォリオ作品です。商品・価格はすべて架空の設定であり、実際の販売・購入はできません。</p>
+<header class="p-header">
+  <div class="p-header__inner">
+    <a class="p-logo" href="/" aria-label="iroha. ホーム">
+      <span class="p-logo__word"><svg width="74" height="24" viewBox="0 0 74 24" aria-hidden="true" focusable="false"><text x="0" y="18" font-family="Poppins, sans-serif" font-weight="600" font-size="20" fill="#315BCB">iroha</text><circle cx="70" cy="19" r="3.4" fill="#F07842"/></svg></span>
+      <span class="p-logo__tagline">STATIONERY &amp; CREATIVE GOODS</span>
+    </a>
+    <nav class="p-nav" aria-label="メインナビゲーション">
+      <div class="p-nav__dropdown">
+        <button type="button" class="p-nav__dropdown-toggle" aria-haspopup="true" aria-expanded="false">CATEGORY <span class="p-nav__dropdown-caret">▾</span></button>
+        <div class="p-nav__dropdown-panel">
+          <a class="p-nav__dropdown-item p-cat-notebook-paper" href="/category/notebook-paper/"><span class="p-nav__dot"></span>NOTEBOOK &amp; PAPER</a><a class="p-nav__dropdown-item p-cat-pen-writing" href="/category/pen-writing/"><span class="p-nav__dot"></span>PEN &amp; WRITING</a><a class="p-nav__dropdown-item p-cat-sticker-craft" href="/category/sticker-craft/"><span class="p-nav__dot"></span>STICKER &amp; CRAFT</a><a class="p-nav__dropdown-item p-cat-desk-accessories" href="/category/desk-accessories/"><span class="p-nav__dot"></span>DESK ACCESSORIES</a><a class="p-nav__dropdown-item p-cat-gift-set" href="/category/gift-set/"><span class="p-nav__dot"></span>GIFT &amp; SET</a>
+          <a class="p-nav__dropdown-item" href="/items/"><span class="p-nav__dot" style="background:var(--c-ink)"></span>ALL ITEMS</a>
+        </div>
+      </div>
+      <a class="p-nav__link" href="/about/">ABOUT</a><a class="p-nav__link" href="/gift-guide/">GIFT GUIDE</a><a class="p-nav__link" href="/news/">NEWS</a><a class="p-nav__link" href="/faq/">FAQ</a>
+    </nav>
+    <div class="p-header__icons">
+      <a class="p-icon-btn" href="#" aria-label="検索"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><line x1="16.2" y1="16.2" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+      <a class="p-icon-btn" href="#" aria-label="カート"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16l-1.6 10.2a2 2 0 0 1-2 1.8H7.6a2 2 0 0 1-2-1.8L4 7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 7V6a4 4 0 0 1 8 0v1" stroke="currentColor" stroke-width="2"/></svg></a>
+      <details class="p-spmenu">
+        <summary aria-label="メニューを開く" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="17" x2="20" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+        <div class="p-spmenu__panel">
+          <button type="button" class="p-spmenu__close" data-spmenu-close aria-label="メニューを閉じる"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><line x1="5" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="19" y1="5" x2="5" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <a class="p-spmenu__link" href="/items/">ALL ITEMS</a>
+          <div class="p-spmenu__sub">
+            <a class="p-nav__dropdown-item p-cat-notebook-paper" href="/category/notebook-paper/"><span class="p-nav__dot"></span>NOTEBOOK &amp; PAPER</a><a class="p-nav__dropdown-item p-cat-pen-writing" href="/category/pen-writing/"><span class="p-nav__dot"></span>PEN &amp; WRITING</a><a class="p-nav__dropdown-item p-cat-sticker-craft" href="/category/sticker-craft/"><span class="p-nav__dot"></span>STICKER &amp; CRAFT</a><a class="p-nav__dropdown-item p-cat-desk-accessories" href="/category/desk-accessories/"><span class="p-nav__dot"></span>DESK ACCESSORIES</a><a class="p-nav__dropdown-item p-cat-gift-set" href="/category/gift-set/"><span class="p-nav__dot"></span>GIFT &amp; SET</a>
+          </div>
+          <a class="p-spmenu__link" href="/about/">ABOUT</a><a class="p-spmenu__link" href="/gift-guide/">GIFT GUIDE</a><a class="p-spmenu__link" href="/news/">NEWS</a><a class="p-spmenu__link" href="/faq/">FAQ</a>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+<main>
+<div class="p-container">
+  <!-- TODO要確認: $item.breadcrumb_list のような商品詳細専用のパンくずタグがあるか未確認。
+       ここでは$category.breadcrumb_list と同じ想定構造でforeachしている（要確認） -->
+  <nav class="p-breadcrumb p-container" aria-label="パンくずリスト">
+    <a href="/">TOP</a><span class="p-breadcrumb__sep">&gt;</span>
+    {foreach from=$item.breadcrumb_list item=crumb name=bc}
+      {if $smarty.foreach.bc.last}
+        <span aria-current="page">{$crumb.name}</span>
+      {else}
+        <a href="{$crumb.url}">{$crumb.name}</a><span class="p-breadcrumb__sep">&gt;</span>
+      {/if}
+    {/foreach}
+  </nav>
+  <div class="p-pd" data-pd>
+    <div>
+      <div class="p-pd__main-img">
+        <img src="{$item.image_L}" alt="{$item.name}" data-pd-main-img width="600" height="600">
+      </div>
+      <!-- TODO要確認: $item.multi_image.list[i] のサブフィールド名（画像URL等）が未確認のため
+           $img.url という想定で実装。サムネ4点目以降がある場合の挙動も要確認 -->
+      <div class="p-pd__thumbs">
+        <button type="button" class="p-pd__thumb" data-pd-thumb="{$item.image_L}" aria-current="true"><img src="{$item.image_L}" alt="{$item.name} 画像1" width="200" height="200"></button>
+        {foreach from=$item.multi_image.list item=img name=mi}
+        <button type="button" class="p-pd__thumb" data-pd-thumb="{$img.url}" aria-current="false"><img src="{$img.url}" alt="{$item.name} 画像{$smarty.foreach.mi.iteration+1}" width="200" height="200"></button>
+        {/foreach}
+      </div>
+    </div>
+    <div>
+      <!-- TODO要確認: カテゴリラベル（色ドット＋カテゴリ名リンク）に対応する$item側プロパティ
+           （$item.category.name/url等）が未確認。ここでは$item.category想定で仮実装 -->
+      <p class="p-pd__cat-label"><span class="p-nav__dot"></span><a href="{$item.category.url}">{$item.category.name}</a></p>
+      <div class="p-pd__title">
+        <h1 class="p-pd__title-ja">{$item.name}</h1>
+        <!-- TODO要確認: 英語名(EN)用の専用タグは未確認のため表示なし（csv/README.md参照。
+             商品CSVの「商品名」列にはnameJaのみを投入しているため、nameEnの投入・表示手段がない） -->
+      </div>
+      <!-- TODO要確認: 商品ラベル(タグ)をテンプレートから読み出す専用プロパティが未確認
+           （$item.label_list等）。CSV列84へは投入済みだが読み出し側は要確認につき非表示 -->
+      <div class="p-pd__tags"></div>
+      <!-- price_htmlは税込表示・通貨記号込みの想定（調査ノート§3）のため、独自の¥記号・(税込)付与はしない -->
+      <p class="p-pd__price">{$item.price_html}</p>
+      <p class="p-pd__desc">{$item.description}</p>
+
+      <!-- TODO要確認: $item.option_sku.list[i] のサブフィールド名（選択肢名・在庫等）が未確認のため
+           $opt.name という想定で実装。バリエーション1=カラーとして登録したCSV(csv/README.md)との対応を
+           Phase Aで確認すること -->
+      <div class="p-pd__colors">
+        <p class="p-pd__block-label">カラーを選ぶ</p>
+        <div class="p-pd__color-options">
+          {foreach from=$item.option_sku.list item=opt name=oc}
+          <label class="p-pd__color-option">
+            <input type="radio" name="color-{$item.code}" value="{$opt.name}"{if $smarty.foreach.oc.first} checked{/if}>
+            <span>{$opt.name}</span>
+          </label>
+          {/foreach}
+        </div>
+      </div>
+
+      <div class="p-pd__spec">
+        <table class="p-pd__spec-table">
+          <tbody>
+            <!-- TODO要確認: 仕様(spec)・カラー表記(colorRaw)に対応する$item側プロパティが未確認。
+                 products.jsonにはあるがMakeShop標準タグに対応物があるか不明なため、
+                 商品説明文(description)への統合 or フリーテキスト項目での管理を検討 -->
+            <tr><th>カラー</th><td><!-- TODO要確認 --></td></tr>
+            <tr><th>仕様</th><td><!-- TODO要確認 --></td></tr>
+            <tr><th>SKU</th><td>{$item.code}</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="p-pd__qty">
+        <span class="p-pd__block-label">数量</span>
+        <span class="p-pd__qty-control">
+          <button type="button" class="p-pd__qty-btn" data-pd-qty-minus aria-label="数量を1減らす">−</button>
+          <input type="number" class="p-pd__qty-input" data-pd-qty-input value="1" min="1" max="99" inputmode="numeric" aria-label="数量">
+          <button type="button" class="p-pd__qty-btn" data-pd-qty-plus aria-label="数量を1増やす">＋</button>
+        </span>
+      </div>
+
+      <div class="p-pd__cta">
+        <!-- TODO要確認: カートボタン正式タグ (CHECKLIST.md参照)。
+             現状は静的版と同じデモボタン（押下でインラインメッセージのみ表示・実購入不可）のままにしている。
+             本番相当の挙動にする場合は、MakeShop公式のカート追加タグ/フォーム構造に置換すること。 -->
+        <button type="button" class="p-btn p-btn--primary p-btn--block" data-pd-cart-btn>カートに入れる</button>
+        <p class="p-pd__cart-msg" data-pd-cart-msg aria-live="polite"></p>
+      </div>
+
+      <!-- TODO要確認: ギフトタグ商品のみ表示するギフト提案ボックス。タグ判定に使う
+           $item.label_list(仮)の有無が未確認のため、{if}条件は保留しコメントのみ残す。
+           例: {if $item.label_list|@in_array:"ギフト"} ... {/if} -->
+      <!--
+      <div class="p-pd__gift-box">
+        ラッピングを想定したギフト向けアイテムです。<a href="/gift-guide/">GIFT GUIDE →</a>
+      </div>
+      -->
+    </div>
+  </div>
+
+  <!-- TODO要確認: 「関連商品」は同カテゴリ4点(自身を除くSKU順・末尾循環)という静的版の仕様。
+       MakeShopの商品グループは「1商品1グループまで」の制約があるため同じ出し方ができるか未確認
+       （docs/makeshop-notes.md §1）。$category.item.list を商品詳細側から参照できるかも未確認のため、
+       ここでは$item.related.list（仮称）という未確認タグ名でプレースホルダ実装している。 -->
+  <section class="p-related">
+    <div class="p-section__head">
+      <p class="p-section__eyebrow">この商品に関連する商品</p>
+      <h2 class="p-section__title" style="font-size:clamp(24px,4vw,34px);">RELATED ITEMS</h2>
+    </div>
+    <div class="p-grid">
+      {foreach from=$item.related.list item=r}
+      <a class="p-card" href="{$r.url}">
+        <div class="p-card__media">
+          <img src="{$r.image_M}" alt="{$r.name}" loading="lazy" width="400" height="400">
+        </div>
+        <div class="p-card__body">
+          <p class="p-card__name-ja">{$r.name}</p>
+          <p class="p-card__price">{$r.price}<span class="p-card__price-note">(税込)</span></p>
+        </div>
+      </a>
+      {/foreach}
+    </div>
+  </section>
+</div>
+</main>
+<footer class="p-footer">
+  <div class="p-container">
+    <div class="p-footer__grid">
+      <details class="p-footer__accordion" open>
+        <summary>SHOP</summary>
+        <nav aria-label="ショップ"><a class="p-footer__link" href="/category/notebook-paper/">NOTEBOOK &amp; PAPER</a><a class="p-footer__link" href="/category/pen-writing/">PEN &amp; WRITING</a><a class="p-footer__link" href="/category/sticker-craft/">STICKER &amp; CRAFT</a><a class="p-footer__link" href="/category/desk-accessories/">DESK ACCESSORIES</a><a class="p-footer__link" href="/category/gift-set/">GIFT &amp; SET</a><a class="p-footer__link" href="/items/">ALL ITEMS</a></nav>
+      </details>
+      <details class="p-footer__accordion" open>
+        <summary>GUIDE</summary>
+        <nav aria-label="ガイド"><a class="p-footer__link" href="/about/">ABOUT</a><a class="p-footer__link" href="/gift-guide/">GIFT GUIDE</a><a class="p-footer__link" href="/faq/">FAQ</a><a class="p-footer__link" href="/news/">NEWS</a></nav>
+      </details>
+      <details class="p-footer__accordion" open>
+        <summary>POLICY</summary>
+        <nav aria-label="ポリシー"><a class="p-footer__link" href="/policy/#guide">ご利用ガイド</a><a class="p-footer__link" href="/policy/#tokushoho">特定商取引法に基づく表記（デモ注記）</a><a class="p-footer__link" href="/policy/#privacy">プライバシーポリシー（デモ）</a></nav>
+      </details>
+      <div>
+        <span class="p-logo__word"><svg width="74" height="24" viewBox="0 0 74 24" aria-hidden="true" focusable="false"><text x="0" y="18" font-family="Poppins, sans-serif" font-weight="600" font-size="20" fill="#315BCB">iroha</text><circle cx="70" cy="19" r="3.4" fill="#F07842"/></svg></span>
+        <p class="p-logo__tagline">STATIONERY &amp; CREATIVE GOODS</p>
+        <div class="p-footer__sns">
+          <a class="p-footer__sns-link" href="#" aria-label="Instagram（ダミー）"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="6" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="2"/></svg></a>
+          <a class="p-footer__sns-link" href="#" aria-label="X（ダミー）"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><line x1="8" y1="9" x2="16" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="16" y1="9" x2="8" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="p-footer__bottom">
+      <p class="p-footer__copyright">© iroha.</p>
+      <p class="p-notice-bar p-notice-bar--footer">本サイトは架空ブランド「iroha.」を題材にしたポートフォリオ作品です。商品・価格はすべて架空の設定であり、実際の販売・購入はできません。</p>
+    </div>
+  </div>
+</footer>
+</div>
+<script>
+/* SPメニュー開閉・CATEGORYドロップダウン・サムネ切替・数量±・カートデモメッセージ
+   （site/js/main.jsから抜粋・移植。画像切替等はdata-*属性＋Smartyタグの組み合わせで
+   静的版と同じ挙動を維持できる想定）。 */
+(function () {
+  "use strict";
+  function initSpMenu() {
+    var menu = document.querySelector(".p-spmenu");
+    if (!menu) return;
+    var summary = menu.querySelector("summary");
+    function syncExpanded() {
+      if (summary) summary.setAttribute("aria-expanded", String(menu.hasAttribute("open")));
+    }
+    menu.addEventListener("toggle", syncExpanded);
+    var closeBtn = menu.querySelector("[data-spmenu-close]");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", function () { menu.removeAttribute("open"); });
+    }
+    menu.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () { menu.removeAttribute("open"); });
+    });
+  }
+  function initCategoryDropdown() {
+    document.querySelectorAll(".p-nav__dropdown").forEach(function (dropdown) {
+      var toggle = dropdown.querySelector(".p-nav__dropdown-toggle");
+      if (!toggle) return;
+      function open() { toggle.setAttribute("aria-expanded", "true"); }
+      function close() { toggle.setAttribute("aria-expanded", "false"); }
+      dropdown.addEventListener("mouseenter", open);
+      dropdown.addEventListener("mouseleave", close);
+      dropdown.addEventListener("focusin", open);
+      dropdown.addEventListener("focusout", function (e) {
+        if (!dropdown.contains(e.relatedTarget)) close();
+      });
+    });
+  }
+  function initProductDetail() {
+    var pd = document.querySelector("[data-pd]");
+    if (!pd) return;
+    var mainImg = pd.querySelector("[data-pd-main-img]");
+    var thumbs = Array.prototype.slice.call(pd.querySelectorAll("[data-pd-thumb]"));
+    thumbs.forEach(function (thumb) {
+      thumb.addEventListener("click", function () {
+        if (!mainImg) return;
+        mainImg.setAttribute("src", thumb.dataset.pdThumb);
+        thumbs.forEach(function (t) { t.setAttribute("aria-current", String(t === thumb)); });
+      });
+    });
+    var qtyInput = pd.querySelector("[data-pd-qty-input]");
+    var minusBtn = pd.querySelector("[data-pd-qty-minus]");
+    var plusBtn = pd.querySelector("[data-pd-qty-plus]");
+    function clampQty(value) {
+      var n = parseInt(value, 10);
+      if (isNaN(n) || n < 1) n = 1;
+      if (n > 99) n = 99;
+      return n;
+    }
+    if (minusBtn && qtyInput) {
+      minusBtn.addEventListener("click", function () { qtyInput.value = clampQty(Number(qtyInput.value) - 1); });
+    }
+    if (plusBtn && qtyInput) {
+      plusBtn.addEventListener("click", function () { qtyInput.value = clampQty(Number(qtyInput.value) + 1); });
+    }
+    if (qtyInput) {
+      qtyInput.addEventListener("change", function () { qtyInput.value = clampQty(qtyInput.value); });
+    }
+    var cartBtn = pd.querySelector("[data-pd-cart-btn]");
+    var cartMsg = pd.querySelector("[data-pd-cart-msg]");
+    if (cartBtn && cartMsg) {
+      cartBtn.addEventListener("click", function () {
+        cartMsg.textContent = "※ポートフォリオ作品のため購入はできません";
+      });
+    }
+  }
+  document.addEventListener("DOMContentLoaded", function () {
+    initSpMenu();
+    initCategoryDropdown();
+    initProductDetail();
+  });
+})();
+</script>
+</body>
+</html>
